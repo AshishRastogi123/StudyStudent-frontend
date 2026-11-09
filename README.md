@@ -10,9 +10,11 @@ Responsive React 19 + Vite frontend for the existing StudyStudent API. The appli
 
 The Vite development server proxies `/api` to `VITE_BACKEND_ORIGIN` (defaults to `http://localhost:3000`) and removes the browser `Origin` header on that local proxy hop, avoiding the backend's default CORS allowlist mismatch during development. Set `VITE_API_BASE_URL` to `/api` for that proxy, or to the deployed API URL (including `/api`) when hosting the frontend separately. Production deployments must configure the backend's `ALLOWED_ORIGINS` for the frontend origin and enable credentialed CORS.
 
+Create a Google OAuth client of type **Web application**, add each frontend origin (such as `http://localhost:5173`) to its authorized JavaScript origins, and set its client ID in the backend's `GOOGLE_CLIENT_ID`. The frontend fetches that public client ID from `/auth/google/config`; the Google client secret remains backend-only.
+
 ## Implemented frontend
 
-- Public landing page, features/how-it-works, about, contact information, searchable public notes, note details, sign-in, and registration.
+- Public landing page, features/how-it-works, founder profile at `/about`, contact information, searchable public notes, note details, sign-in, and registration.
 - Student dashboard, private note submissions, supported multipart uploads with progress, status/rejection feedback, secure file access, bookmarks, academic hierarchy browsing, and notifications.
 - Role-gated moderator/admin dashboards, pending review queue with approve/reject actions, report listing, and admin course/subject creation.
 - Responsive layouts, light/dark workspace themes, reduced-motion handling, route transitions, scroll reveals, accessible Radix dialogs/menus, drag-and-drop, and PDF previews.
@@ -29,6 +31,10 @@ The Vite development server proxies `/api` to `VITE_BACKEND_ORIGIN` (defaults to
 - `src/store/` — Redux store setup
 - `src/utils/` — shared formatting helpers
 - `src/styles.css` — responsive design tokens and component styles
+- `public/favicon.ico`, `public/favicon.svg`, and PNG variants — StudyStudent browser and home-screen icons
+- `public/images/ashish-profile-placeholder.svg` — replaceable founder portrait placeholder; replace this asset with the founder's approved photo when available
+
+The browser tab title is `StudyStudent`. The About page uses a branded initials placeholder rather than an unprovided photograph.
 
 ## Verified backend API map
 
@@ -36,7 +42,7 @@ All paths below are relative to `/api`. Request names and query formats match th
 
 | Frontend capability | Backend API |
 |---|---|
-| Register / sign in | `POST /auth/register` (`name`, `email`, `password`); `POST /auth/login` (`email`, `password`) |
+| Register / sign in | `POST /auth/register` (`name`, `email`, `password`); `POST /auth/login` (`email`, `password`); `GET /auth/google/config`; `POST /auth/google` (`credential`, verified Google ID token) |
 | Restore / end session | `GET /auth/me`; `POST /auth/logout` |
 | Profile update | `PUT /auth/profile` |
 | Student metrics and recent activity | `GET /notes/my-notes`; `GET /notes/bookmarks`; `GET /notifications` |
@@ -62,11 +68,10 @@ The backend must have its Supabase URL, service-role key, and storage bucket con
 
 The backend returns a JWT from login/registration and also sets an HttpOnly cookie. The cookie name defaults to `studystudent_session`, but `middleware/auth.js` only checks a cookie named `token` or a bearer authorization header. The frontend keeps the returned JWT in `sessionStorage` and sends it as a bearer token so protected APIs work with the current backend. Aligning the cookie name/middleware would allow a future HttpOnly-cookie-only flow.
 
-The backend's `/auth/google` handler accepts a name/email/avatar body without validating a Google ID token; the frontend intentionally does not expose it as Google OAuth. This avoids treating unverified client-supplied identity as authentication.
+Google sign-in uses Google Identity Services to obtain an ID token. The backend verifies its signature, audience, and verified-email claim against `GOOGLE_CLIENT_ID` before creating or signing in a user. This endpoint rejects client-supplied names/emails as authentication proof.
 
 ## Missing backend dependencies / unsupported workflows
 
-- **Verified Google OAuth:** add server-side ID-token verification and a defined OAuth client/callback contract before exposing Google sign-in.
 - **Contact submission:** no public contact endpoint or configured support address is available; the Contact page explains the supported in-product reporting route.
 - **Email verification and password recovery delivery:** verification/reset routes exist, but no email delivery/resend contract is present; registration currently reports the backend response and does not invent a delivery flow.
 - **Note resubmission/editing:** there is no resubmit/update route. Students can see rejection feedback and delete notes; rejected notes cannot be resubmitted in place.

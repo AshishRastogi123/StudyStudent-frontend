@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useSelector } from "react-redux";
 import {
-  ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Bookmark, Check, ChevronRight,
-  FileStack, GraduationCap, LibraryBig, LockKeyhole, Search, ShieldCheck, Sparkles,
-  UploadCloud, Users, Zap,
+  ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Bookmark, BrainCircuit, Check, ChevronRight,
+  Code2, Cpu, FileStack, HeartPulse, LibraryBig, LockKeyhole, Search, ShieldCheck, Sparkles,
+  TrendingUp, UploadCloud, Users, Zap,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -120,14 +120,155 @@ export function LandingPage() {
 }
 
 export function AboutPage() {
+  const reducedMotion = useReducedMotion();
+  const introduction = [
+    "I am Ashish Kumar Rastogi, a technology enthusiast and Computer Science professional with a strong interest in Artificial Intelligence, Machine Learning, and Software Development.",
+    "I am passionate about building innovative technology solutions that make learning more accessible, organized, and effective.",
+    "My technical interests include Python, JavaScript, React.js, Node.js, MongoDB, Artificial Intelligence, Machine Learning, and Deep Learning.",
+    "Through StudyStudent, my vision is to create a collaborative educational platform where students can upload, discover, share, and access quality study materials in one place.",
+    "I believe that knowledge becomes more valuable when it is shared.",
+  ];
+  const skills = [
+    "Python", "JavaScript", "React.js", "Node.js", "Express.js", "MongoDB",
+    "Artificial Intelligence", "Machine Learning", "Deep Learning", "TensorFlow",
+    "Scikit-Learn", "Full-Stack Development", "Educational Technology", "Software Engineering",
+  ];
+  const projects = [
+    {
+      icon: HeartPulse,
+      name: "SwasthaLife",
+      type: "Healthcare technology",
+      description: "A healthcare technology platform focused on practical digital experiences.",
+    },
+    {
+      icon: TrendingUp,
+      name: "Retail Sales Prediction",
+      type: "Machine learning",
+      description: "A machine learning project exploring retail sales prediction.",
+    },
+    {
+      icon: Code2,
+      name: "Technology-driven projects",
+      type: "Software development",
+      description: "Exploring software solutions across development and learning experiences.",
+    },
+  ];
+
   return (
-    <main className="content-page">
-      <section className="simple-hero"><p className="eyebrow">About StudyStudent</p><h1>Learning gets better<br /><span>when we share.</span></h1><p>StudyStudent is a community-first home for student notes: easy to explore, thoughtful about quality, and built to help people learn from each other.</p></section>
-      <div className="about-values">
-        {[{ icon: GraduationCap, title: "Made for real study", copy: "Useful academic materials should be easy to find and simple to revisit." }, { icon: ShieldCheck, title: "Quality before quantity", copy: "Submissions stay private until a moderator reviews them for the public library." }, { icon: Users, title: "Better together", copy: "Every clear explanation shared today can help another student tomorrow." }].map(({ icon: Icon, title, copy }) => <Card key={title}><span className="feature-icon"><Icon size={19} /></span><h3>{title}</h3><p>{copy}</p></Card>)}
-      </div>
-      <div className="about-cta"><h2>Have something helpful to share?</h2><p>Join the community and add your notes to the review queue.</p><Link to="/register" className="button button-primary">Get started <ArrowRight size={16} /></Link></div>
-    </main>
+    <AnimatePresence initial={false}>
+      <motion.main
+        key="founder-about"
+        className="content-page founder-page"
+        initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.08 }}
+        exit={reducedMotion ? undefined : { opacity: 0, y: -8 }}
+        transition={{ duration: reducedMotion ? 0 : 0.5, ease: "easeOut" }}
+      >
+        <section className="founder-profile">
+          <motion.div
+            className="founder-portrait-frame"
+            initial={reducedMotion ? false : { opacity: 0, x: -18 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            whileHover={reducedMotion ? undefined : { y: -4 }}
+            transition={{ duration: reducedMotion ? 0 : 0.45, ease: "easeOut" }}
+          >
+            <img
+              className="founder-portrait"
+              src="/images/ashish-profile.jpg"
+              alt="Ashish Kumar Rastogi – Founder of StudyStudent"
+              width="520"
+              height="600"
+            />
+            <div className="founder-portrait-caption">
+              <span className="founder-caption-mark"><BookOpen size={16} /></span>
+              <span><strong>Built around shared knowledge</strong><small>Technology with a learning-first purpose</small></span>
+            </div>
+          </motion.div>
+
+          <div className="founder-intro">
+            <p className="eyebrow">The person behind the platform</p>
+            <h1>Ashish Kumar Rastogi</h1>
+            <p className="founder-designation">Founder &amp; Creator of StudyStudent</p>
+            <p className="founder-identity">Technology Enthusiast <span>·</span> AI &amp; Software Development Professional</p>
+            <div className="founder-biography">
+              {introduction.map((paragraph, index) => (
+                <motion.p
+                  key={paragraph}
+                  initial={reducedMotion ? false : { opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ duration: reducedMotion ? 0 : 0.35, delay: reducedMotion ? 0 : index * 0.07 }}
+                >
+                  {paragraph}
+                </motion.p>
+              ))}
+            </div>
+            <div className="founder-mission">
+              <span className="mission-icon"><BrainCircuit size={19} /></span>
+              <div><strong>Our mission</strong><p>To make quality educational resources accessible to every student through technology and knowledge sharing.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="founder-skills" aria-labelledby="founder-skills-heading">
+          <div className="founder-section-heading">
+            <span className="founder-section-icon"><Cpu size={17} /></span>
+            <div><p className="eyebrow">Areas of focus</p><h2 id="founder-skills-heading">Interests &amp; technical skills</h2></div>
+          </div>
+          <motion.ul
+            className="skill-badges"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{ visible: { transition: { staggerChildren: reducedMotion ? 0 : 0.035 } } }}
+          >
+            {skills.map((skill) => (
+              <motion.li
+                key={skill}
+                variants={{
+                  hidden: reducedMotion ? { opacity: 1 } : { opacity: 0, y: 8 },
+                  visible: { opacity: 1, y: 0, transition: { duration: reducedMotion ? 0 : 0.25 } },
+                }}
+              >
+                {skill}
+              </motion.li>
+            ))}
+          </motion.ul>
+        </section>
+
+        <section className="founder-projects" aria-labelledby="founder-projects-heading">
+          <div className="founder-section-heading">
+            <span className="founder-section-icon"><Code2 size={17} /></span>
+            <div><p className="eyebrow">Selected work</p><h2 id="founder-projects-heading">Building useful technology</h2></div>
+          </div>
+          <div className="founder-project-grid">
+            {projects.map(({ icon: Icon, name, type, description }, index) => (
+              <motion.article
+                key={name}
+                className="founder-project-card"
+                initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                whileHover={reducedMotion ? undefined : { y: -4 }}
+                transition={{ duration: reducedMotion ? 0 : 0.32, delay: reducedMotion ? 0 : index * 0.06 }}
+              >
+                <span className="founder-project-icon"><Icon size={18} /></span>
+                <span className="founder-project-type">{type}</span>
+                <h3>{name}</h3>
+                <p>{description}</p>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+
+        <div className="about-cta founder-cta">
+          <div><p className="eyebrow">StudyStudent</p><h2>Knowledge grows when it’s shared.</h2><p>Discover and share useful learning resources with the community.</p></div>
+          <Link to="/register" className="button button-primary">Join the community <ArrowRight size={16} /></Link>
+        </div>
+      </motion.main>
+    </AnimatePresence>
   );
 }
 
@@ -168,9 +309,111 @@ function AuthShell({ title, subtitle, linkText, linkTo, children }) {
   );
 }
 
+function useGoogleSignIn() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  return useCallback(async (credential) => {
+    try {
+      const { data } = await authApi.google({ credential });
+      dispatch(setSession({ user: data.user, token: data.token }));
+      toast.success(data.message || "Google sign-in successful.");
+      navigate("/app", { replace: true });
+    } catch (error) {
+      toast.error(errorMessage(error));
+    }
+  }, [dispatch, navigate]);
+}
+
+function GoogleSignInSection({ onCredential }) {
+  const buttonRef = useRef(null);
+  const [status, setStatus] = useState("loading");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    const scriptUrl = "https://accounts.google.com/gsi/client";
+    const loadGoogleScript = () => {
+      if (window.google?.accounts?.id) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        let script = document.querySelector("script[data-google-identity]");
+        if (!script) {
+          script = document.createElement("script");
+          script.src = scriptUrl;
+          script.async = true;
+          script.defer = true;
+          script.dataset.googleIdentity = "true";
+        }
+        script.addEventListener("load", resolve, { once: true });
+        script.addEventListener("error", () => {
+          script.remove();
+          reject(new Error("Google sign-in script failed to load."));
+        }, { once: true });
+        if (!script.isConnected) document.head.appendChild(script);
+      });
+    };
+
+    authApi.googleConfig().then(({ data }) => {
+      if (!data.clientId) {
+        if (active) setStatus("unconfigured");
+        return null;
+      }
+      return loadGoogleScript().then(() => data.clientId);
+    }).then((clientId) => {
+      if (!active || !clientId || !buttonRef.current) return;
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: async ({ credential }) => {
+          if (!credential) {
+            toast.error("Google did not return a sign-in credential.");
+            return;
+          }
+          setBusy(true);
+          try {
+            await onCredential(credential);
+          } finally {
+            setBusy(false);
+          }
+        },
+      });
+      window.google.accounts.id.renderButton(buttonRef.current, {
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
+        width: Math.floor(buttonRef.current.getBoundingClientRect().width),
+      });
+      setStatus("ready");
+    }).catch((error) => {
+      if (!active) return;
+      setStatus("error");
+      toast.error(errorMessage(error) === "Network Error"
+        ? "Unable to load Google sign-in. Check your connection and try again."
+        : "Unable to load Google sign-in. Please try again later.");
+    });
+
+    return () => { active = false; };
+  }, [onCredential]);
+
+  return (
+    <div className="google-signin-section">
+      <div className="auth-divider"><span>or continue with</span></div>
+      <div className={`google-signin-button${busy ? " google-signin-busy" : ""}`}>
+        <div ref={buttonRef} />
+        {status === "loading" && <span className="google-signin-message">Loading Google sign-in...</span>}
+        {status === "error" && <span className="google-signin-message">Google sign-in could not be loaded.</span>}
+        {status === "unconfigured" && <span className="google-signin-message">Google sign-in is not configured.</span>}
+      </div>
+      {busy && <span className="google-signin-message">Signing in...</span>}
+    </div>
+  );
+}
+
 export function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const googleSignIn = useGoogleSignIn();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(loginSchema) });
   const onSubmit = async (body) => {
     try {
@@ -190,6 +433,7 @@ export function LoginPage() {
         <Link to="/forgot-password" className="text-link auth-help-link">Forgot your password?</Link>
         <Button type="submit" className="auth-submit" disabled={isSubmitting}>{isSubmitting ? "Signing in..." : "Sign in"} <ArrowRight size={16} /></Button>
       </form>
+      <GoogleSignInSection onCredential={googleSignIn} />
     </AuthShell>
   );
 }
@@ -197,6 +441,7 @@ export function LoginPage() {
 export function RegisterPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const googleSignIn = useGoogleSignIn();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(registerSchema) });
   const onSubmit = async ({ confirmPassword, ...body }) => {
     try {
@@ -218,6 +463,7 @@ export function RegisterPage() {
         <p className="form-hint">Student accounts are created with the STUDENT role.</p>
         <Button type="submit" className="auth-submit" disabled={isSubmitting}>{isSubmitting ? "Creating account..." : "Create account"} <ArrowRight size={16} /></Button>
       </form>
+      <GoogleSignInSection onCredential={googleSignIn} />
     </AuthShell>
   );
 }

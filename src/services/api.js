@@ -18,6 +18,8 @@ export function errorMessage(error) {
 
 export const authApi = {
   login: (body) => api.post("/auth/login", body),
+  googleConfig: () => api.get("/auth/google/config"),
+  google: (body) => api.post("/auth/google", body),
   register: (body) => api.post("/auth/register", body),
   logout: () => api.post("/auth/logout"),
   me: () => api.get("/auth/me"),
